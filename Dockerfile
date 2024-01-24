@@ -9,12 +9,31 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
+
 RUN echo 'Downloading IntelliJ IDEA' && \
     wget https://download.jetbrains.com/idea/ideaIC-2023.3.2.tar.gz -O /tmp/intellij.tar.gz -q && \
     echo 'Installing IntelliJ IDEA' && \
     mkdir -p /opt/intellij && \
     tar -xf /tmp/intellij.tar.gz --strip-components=1 -C /opt/intellij && \
-    rm /tmp/intellij.tar.gz
+    echo 'Cleanup' && \
+    rm /tmp/intellij.tar.gz && \
+# remove all plugins but not java & java ide
+    find /opt/intellij/plugins -mindepth 1 -maxdepth 1 -type d | \
+        grep -ve "/java$" | \
+        grep -ve "/java-ide-customization$" | \
+        xargs rm -r && \
+# remove not necessary files in distibution
+    rm /opt/intellij/lib/groovy.jar \
+        /opt/intellij/lib/grpc.jar \
+        /opt/intellij/lib/testFramework.jar \
+        /opt/intellij/lib/ant \
+        /opt/intellij/lib/bouncy-castle.jar \
+        /opt/intellij/jbr/lib/libcef.so \
+        /opt/intellij/jbr/lib/libjcef.so \
+        /opt/intellij/jbr/lib/locales \
+        /opt/intellij/bin/repair \
+        /opt/intellij/bin/restarter \
+        -rf
 
 # Dirty trick to remove the IntelliJ configuration directory created on the fly
 RUN echo 'rm -rf ?' >> /opt/intellij/bin/idea.sh

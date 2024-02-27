@@ -16,10 +16,9 @@ RUN echo 'Downloading IntelliJ IDEA' && \
     mkdir -p /opt/intellij && \
     tar -xf /tmp/intellij.tar.gz --strip-components=1 -C /opt/intellij && \
     echo 'Cleanup' && \
-    rm /tmp/intellij.tar.gz
-
+    rm /tmp/intellij.tar.gz && \
 # remove all plugins but not java & java ide
-RUN find /opt/intellij/plugins -mindepth 1 -maxdepth 1 -type d | \
+    find /opt/intellij/plugins -mindepth 1 -maxdepth 1 -type d | \
         grep -ve "/platform-images$" | \
         grep -ve "/java$" | \
         grep -ve "/java-ide-customization$" | \
@@ -34,7 +33,6 @@ RUN find /opt/intellij/plugins -mindepth 1 -maxdepth 1 -type d | \
         grep -ve "/markdown$" | \
         grep -ve "/css-impl$" | \
         grep -ve "/javascript-impl$" | \
-#        grep -ve "/textmate$" | \
 # database tools for SQL
         grep -ve "/DatabaseTools$" | \
         grep -ve "/grid-core-impl$" | \

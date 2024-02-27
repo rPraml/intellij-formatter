@@ -13,5 +13,6 @@ su "$UNAME" -c "cp /tmp/idea.key /tmp/ic/config"
 su "$UNAME" -c id
 
 IDE_BIN_HOME="${0%/*}"
+echo "-Duser.name=$USERNAME" >> ${IDE_BIN_HOME}/idea64.vmoptions
 su "$UNAME" -c "$IDE_BIN_HOME/idea.sh"\ format\ "$*"
 

@@ -13,7 +13,7 @@ to format code in current directory
 
 use
 
-    docker run --rm  --volume ~/.config/JetBrains/IntelliJIdea2023.3/:/tmp/config --volume $(pwd):/data -e UID=$(id -u) -e UNAME="$(id -un)" -it intellij-ultimate-formatter
+    docker run --rm  --volume ~/.config/JetBrains/IntelliJIdea2023.3/:/tmp/config --volume $(pwd):/data -e UID=$(id -u) -e UNAME="$(id -un)" -it praml/intellij-ultimate-formatter:1.0
 
 to run with ultimate formatter. You need a valid license in your config directory.
 

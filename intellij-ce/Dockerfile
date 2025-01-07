@@ -11,7 +11,7 @@ RUN apt-get update && \
 
 
 RUN echo 'Downloading IntelliJ IDEA' && \
-    wget https://download.jetbrains.com/idea/ideaIC-2023.3.2.tar.gz -O /tmp/intellij.tar.gz -q && \
+    wget https://download.jetbrains.com/idea/ideaIC-2024.3.1.1.tar.gz -O /tmp/intellij.tar.gz -q && \
     echo 'Installing IntelliJ IDEA' && \
     mkdir -p /opt/intellij && \
     tar -xf /tmp/intellij.tar.gz --strip-components=1 -C /opt/intellij && \
@@ -20,6 +20,7 @@ RUN echo 'Downloading IntelliJ IDEA' && \
 # remove all plugins but not java & java ide
     find /opt/intellij/plugins -mindepth 1 -maxdepth 1 -type d | \
         grep -ve "/java$" | \
+        grep -ve "/json$" | \
         grep -ve "/java-ide-customization$" | \
         xargs rm -r && \
 # remove not necessary files in distibution
@@ -34,13 +35,16 @@ RUN echo 'Downloading IntelliJ IDEA' && \
         /opt/intellij/bin/repair \
         /opt/intellij/bin/restarter \
         -rf
+RUN rm /opt/intellij/plugins/plugin-classpath.txt
 
 # Dirty trick to remove the IntelliJ configuration directory created on the fly
 RUN echo 'rm -rf ?' >> /opt/intellij/bin/idea.sh
 RUN echo idea.config.path=/tmp/ic/config >> /opt/intellij/bin/idea.properties && \
     echo idea.system.path=/tmp/ic/system >> /opt/intellij/bin/idea.properties && \
     echo idea.plugins.path=/tmp/ic/plugins >> /opt/intellij/bin/idea.properties
-
+# create .local directory for various settings
+RUN mkdir /.local
+RUN chmod 777 /.local
 WORKDIR /tmp
 
 ENTRYPOINT ["/opt/intellij/bin/format.sh", "-r" , "/data" , "-charset", "utf-8"]
